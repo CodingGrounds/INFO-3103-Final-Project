@@ -1,0 +1,12 @@
+DELIMITER //
+
+DROP PROCEDURE IF EXISTS add_file;
+
+CREATE PROCEDURE add_file(
+  IN in_id INT
+)
+BEGIN
+  DELETE FROM files WHERE id = in_id;
+END//
+
+DELIMITER ;
