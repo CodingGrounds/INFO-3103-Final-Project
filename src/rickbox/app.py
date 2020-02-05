@@ -1,6 +1,9 @@
 from flask import Flask
 
+from blueprints.register import register_all_blueprints
+
 app = Flask(__name__)
+register_all_blueprints(app)
 
 
 @app.route('/')

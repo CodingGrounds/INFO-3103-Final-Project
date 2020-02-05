@@ -9,7 +9,7 @@ CREATE PROCEDURE add_file(
   IN in_owner_id INT
 )
 BEGIN
-  INSERT INTO files (name, path, owner_id, folder_id)
+  INSERT INTO files (name, path, folder_id, owner_id)
   VALUES (in_name, in_path, in_owner_id, in_folder_id);
 END//
 

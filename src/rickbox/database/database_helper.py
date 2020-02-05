@@ -39,7 +39,7 @@ with DatabaseHelper() as database:
 
 import pymysql
 
-from database_config import MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DB
+from database.database_config import MYSQL_HOST, MYSQL_USER, MYSQL_PASS, MYSQL_DB
 
 
 class DatabaseHelper:
