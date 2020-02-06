@@ -1,6 +1,11 @@
-#!/Users/aj/work/unb/info3103/project_backend/venv/bin/python
+import glob
+import os
+
 from database.database_helper import DatabaseHelper
 
+
 if __name__ == '__main__':
-    with DatabaseHelper() as database:
-        database.execute('DROP DATABASE IF EXISTS `skydrive`')
+    sql = "DROP DATABASE IF EXISTS skydrive;"
+    sql += "CREATE DATABASE skydrive;"
+
+    print(sql)

@@ -1,8 +1,16 @@
-class User:
-    def __init__(self, username, root_folder_id, login_name, display_name=None):
+import pymysql
+from database import RecordNotFoundError, get_columns, ColumnNotSearchableError
+from database.database_helper import DatabaseHelper
+from database.models.base import BaseModel
 
-    @staticmethod
-    def get_by_id(user_id):
-        if user_id is None:
-            raise ValueError('`user_id` is a required parameter.')
-        user =
+
+class User(BaseModel):
+
+    def __init__(self, username=None, root_folder_id=None, login_name=None, display_name=None):
+        super()
+        return
+
+    @property
+    def table_name(self):
+        return 'users'
+
