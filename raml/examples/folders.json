@@ -1,0 +1,28 @@
+{
+  "data": [
+    {
+      "type": "folder",
+      "id": "935bb73f-86ea-4952-8e9e-f25fcf30e234",
+      "name": "example folder 1",
+      "parent_folder_id": "00d43180-088f-4e20-9ed5-110f60c9af90",
+      "created_at": "2018-12-19 09:26:03.478039",
+      "modified_at": "2018-12-19 09:26:03.478039"
+    },
+    {
+      "type": "file",
+      "id": "c673fbc8-7afd-45ef-82fa-61de63346c8e",
+      "name": "example file 1",
+      "parent_folder_id": "00d43180-088f-4e20-9ed5-110f60c9af90",
+      "created_at": "2018-12-12 09:26:03.478039",
+      "modified_at": "2018-12-14 09:26:03.478039"
+    },
+    {
+      "type": "file",
+      "id": "9ec1a5d8-cd47-4d4d-b00f-f2febd4f7f1d",
+      "name": "example file 2",
+      "parent_folder_id": "00d43180-088f-4e20-9ed5-110f60c9af90",
+      "created_at": "2018-12-17 09:26:03.478039",
+      "modified_at": "2018-12-21 09:26:03.478039"
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+#%RAML 1.0 Schema
+/{id}:
+  description: Manage a single folder.
+  uriParameters:
+    id:
+      type: string
+      required: true
+  get:
+    description: Retrieve the contents of a folder.
+    responses:
+      200:
+        description: Successfully found the folder and the user has permissions to view it.
+        body:
+          application/json:
+            example: !include ../examples/folders.json
+      400: !include ../responses/generic_responses/400.raml
+      401: !include ../responses/generic_responses/401.raml
+      403: !include ../responses/generic_responses/403.raml
+      404: !include ../responses/generic_responses/404.raml
+  put:
+    description: Change the name or location of a folder.
+    body:
+      type:
+        name:
+          requred: false
+          type: string
+        parent_folder_id:
+          requred: false
+          type: string
+    responses:
+      204:
+        description: Successfully updated the folder.
+      400: !include ../responses/generic_responses/400.raml
+      401: !include ../responses/generic_responses/401.raml
+      403: !include ../responses/generic_responses/403.raml
+      404: !include ../responses/generic_responses/404.raml
+  delete:
+    description: Delete a folder.
+    responses:
+      204:
+        description: Successfully deleted the folder.
+      400: !include ../responses/generic_responses/400.raml
+      401: !include ../responses/generic_responses/401.raml
+      403: !include ../responses/generic_responses/403.raml
+      404: !include ../responses/generic_responses/404.raml
+  post:
+    description: Create a new sub-folder.
+    body:
+      type:
+        name:
+          requred: false
+          type: string
+    responses:
+      201:
+        description: Successfully created the folder.
+        body:
+          application/json:
+            example: !include ../examples/single_uuid.json
+      400: !include ../responses/generic_responses/400.raml
+      401: !include ../responses/generic_responses/401.raml
+      403: !include ../responses/generic_responses/403.raml
+      404: !include ../responses/generic_responses/404.raml
