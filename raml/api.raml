@@ -1,0 +1,180 @@
+#%RAML 1.0
+title: RickBox
+version: v1
+baseUri: /api
+
+types:
+  ResourceRef:
+    properties:
+      resourceId: number
+  Login:
+    properties:
+      username: string
+      password: string
+    example:
+      username: "jdoe7"
+      password: "password"
+  UserIn:
+    properties:
+      username: string
+      name: string
+      email: string
+    example:
+      username: "jdoe7"
+      name: "John Doe"
+      email: "john.doe@unb.ca"
+  User:
+    properties:
+      id: integer
+      username: string
+      name: string
+      email: string
+    example:
+      id: 12345
+      username: "jdoe7"
+      name: "John Doe"
+      email: "john.doe@unb.ca"
+  FileIn:
+    properties:
+      name: string
+      path: string
+    example:
+      name: "essay.docx"
+      path: "/usr/john/documents/essay.docx"
+  File:
+    properties:
+      id: integer
+      name: string
+      path: string
+      lastModified: datetime-only
+      size: integer
+    example:
+      id: 12345
+      name: "essay.docx"
+      path: "/files/jdoe7/essay.docx"
+      lastModified: "2020-02-21T23:59:59"
+      size: 84516
+
+/login:
+  post:
+    description: Log a user into the application by authentication using ldap
+    body:
+      application/json:
+        type: Login
+    responses:
+      201:
+        body:
+          application/json:
+            type: ResourceRef
+  delete:
+    description: Log a user out of the application
+    responses:
+      204:
+/users:
+  post:
+    description: Create a new user account
+    body:
+      application/json:
+        type: UserIn
+    responses:
+      201:
+        body:
+          application/json:
+            type: ResourceRef
+  /{id}:
+    get:
+      description: Get information about a particular user
+      responses:
+        200:
+          body:
+            application/json:
+              type: User
+        401:
+          body:
+            application/json:
+              type: !include responses/401.json
+        403:
+          body:
+            application/json:
+              type: !include responses/403.json
+
+    /files:
+      get:
+        description: Get all files owned by the given user
+        responses:
+          200:
+            body:
+              application/json:
+                type: File[]
+          401:
+            body:
+              application/json:
+                type: !include responses/401.json
+          403:
+            body:
+              application/json:
+                type: !include responses/403.json
+      post:
+        description: Create a new file owned by the given user
+        body:
+          application/json:
+            type: FileIn
+        responses:
+          201:
+            body:
+              application/json:
+                type: ResourceRef
+          401:
+            body:
+              application/json:
+                type: !include responses/401.json
+          403:
+            body:
+              application/json:
+                type: !include responses/403.json
+      /{id}:
+        get:
+          description: Retrieve information about a particular file
+          responses:
+            200:
+              body:
+                application/json:
+                  type: File
+            401:
+              body:
+                application/json:
+                  type: !include responses/401.json
+            403:
+              body:
+                application/json:
+                  type: !include responses/403.json
+        put:
+          description: Update the information about the particular file
+          body:
+            application/json:
+              type: File
+          responses:
+            200:
+              body:
+                application/json:
+                  type: File
+            401:
+              body:
+                application/json:
+                  type: !include responses/401.json
+            403:
+              body:
+                application/json:
+                  type: !include responses/403.json
+        delete:
+          description: Delete a particular file associated with the given user
+          responses:
+            204:
+            401:
+              body:
+                application/json:
+                  type: !include responses/401.json
+            403:
+              body:
+                application/json:
+                  type: !include responses/403.json
