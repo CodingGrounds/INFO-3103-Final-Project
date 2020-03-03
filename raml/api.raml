@@ -81,6 +81,10 @@ types:
         body:
           application/json:
             type: ResourceRef
+      409:
+        body:
+          application/json:
+            type: !include responses/409.json
   /{id}:
     get:
       description: Get information about a particular user
@@ -97,6 +101,10 @@ types:
           body:
             application/json:
               type: !include responses/403.json
+        404:
+          body:
+            application/json:
+              type: !include responses/404.json
 
     /files:
       get:
@@ -148,6 +156,10 @@ types:
               body:
                 application/json:
                   type: !include responses/403.json
+            404:
+              body:
+                application/json:
+                  type: !include responses/404.json
         put:
           description: Update the information about the particular file
           body:
@@ -166,6 +178,10 @@ types:
               body:
                 application/json:
                   type: !include responses/403.json
+            404:
+              body:
+                application/json:
+                  type: !include responses/404.json
         delete:
           description: Delete a particular file associated with the given user
           responses:
@@ -178,3 +194,7 @@ types:
               body:
                 application/json:
                   type: !include responses/403.json
+            404:
+              body:
+                application/json:
+                  type: !include responses/404.json
