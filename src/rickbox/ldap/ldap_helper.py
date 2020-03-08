@@ -49,11 +49,11 @@ class LdapHelper:
             connection.open()
             connection.start_tls()
             connection.bind()
-            return 200, 'successfully authenticated user'
+            return 201, 'successfully authenticated user'
         except LDAPInvalidCredentialsResult:
             return 401, 'invalid username or password provided'
-        except LDAPException:
-            return 500, 'an unexpected error occurred'
+        except LDAPException as e:
+            return 500, f'an unexpected error occurred: {e}'
         finally:
             connection.unbind()
 

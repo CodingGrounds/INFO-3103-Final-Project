@@ -1,4 +1,7 @@
 venv/
+src/rickbox/flask_session/
 .idea/
 __pycache__/
 *.swp
+*.pyc
+.DS_STORE
