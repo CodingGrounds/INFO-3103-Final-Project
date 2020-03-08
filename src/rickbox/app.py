@@ -29,7 +29,7 @@ def hello_world():
 
 
 @app.route('/users', strict_slashes=False)
-def users_list():
+def users_by_id():
     response_body = {'message': 'Listing users is not enabled.'}
     return Response(json.dumps(response_body), 200)
 
