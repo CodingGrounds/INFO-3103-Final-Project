@@ -1,13 +1,12 @@
-import json
-
-from flask import Flask, request, Response, session
+from flask import Flask
 from flask_restful import Api
 from flask_session import Session
 
 import app_config
-from database.models.user import User
-from resources.user_session import UserSession
+from resources.file_manager import FileManager
 from resources.user_manager import UserManager
+from resources.user_session import UserSession
+from util.responses import json_response
 
 app = Flask(__name__)
 
@@ -21,6 +20,7 @@ api = Api(app)
 
 api.add_resource(UserSession, '/login')
 api.add_resource(UserManager, '/users/<user_identifier>')
+api.add_resource(FileManager, '/users/<user_id>/files')
 
 
 @app.route('/')
@@ -29,9 +29,9 @@ def hello_world():
 
 
 @app.route('/users', strict_slashes=False)
-def users_by_id():
+def users_list():
     response_body = {'message': 'Listing users is not enabled.'}
-    return Response(json.dumps(response_body), 200)
+    return json_response(response_body, 200)
 
 
 if __name__ == '__main__':

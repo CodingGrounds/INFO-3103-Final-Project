@@ -8,11 +8,12 @@ CLI Usage (with app running on info3103:1503):
         curl -i -H "Content-Type: application/json" -X GET -b cookie-jar http://info3103.cs.unb.ca:1503/users/1
 """
 
+from flask import Response
 from flask_restful import Resource
 
-from util.decorators import conceal_error_message, require_session
-from util.errors import *
 from database.models.user import User
+from util.decorators import conceal_error_message, require_session
+from util.responses import ERROR_400, ERROR_404
 
 
 class UserManager(Resource):

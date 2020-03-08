@@ -14,13 +14,13 @@ CLI Usage (with app running on info3103:1503):
         curl -i -H "Content-Type: application/json" -X GET -b cookie-jar http://info3103.cs.unb.ca:1503/login
 """
 
-import json
-from flask import Response, request, session
+from flask import request, session
 from flask_restful import Resource
 
-from util.decorators import conceal_error_message, require_session
-from ldap.ldap_helper import LdapHelper
 from database.models.user import User
+from ldap.ldap_helper import LdapHelper
+from util.decorators import conceal_error_message, require_session
+from util.responses import ERROR_400, json_response
 
 
 class UserSession(Resource):
@@ -31,7 +31,7 @@ class UserSession(Resource):
         if not request.json \
                 or 'username' not in request.json \
                 or 'password' not in request.json:
-            return Response(json.dumps({'message': 'Bad request'}), 400)
+            return ERROR_400
 
         username = request.json['username']
         with LdapHelper() as ldap:
@@ -41,20 +41,20 @@ class UserSession(Resource):
         response_body = {'message': result[1]}
 
         if status_code == 201:
+            # auto-generate User records for first-time logins
+            if User.username_available(username):
+                User(username=username).save()
+            user_record = User.get_by_username(username)
             session['username'] = username
+            session['user_id'] = user_record.id
 
-        # auto-generate User records for first-time logins
-        if User.username_available(username):
-            User(username=username).save()
-        return Response(json.dumps(response_body),
-                        status=status_code,
-                        mimetype='application/json')
+        return json_response(response_body, status_code)
 
     @conceal_error_message
     @require_session
     def get(self):
         response_body = {'message': 'OK', 'username': session.get('username')}
-        return Response(json.dumps(response_body), 200)
+        return json_response(response_body, 200)
 
     @conceal_error_message
     def delete(self):
@@ -62,4 +62,4 @@ class UserSession(Resource):
             session.pop('username')
         except KeyError:
             pass
-        return Response(json.dumps({'message': 'OK'}), 204)
+        return json_response({'message': 'OK'}, 204)
