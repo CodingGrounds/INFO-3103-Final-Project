@@ -13,6 +13,7 @@ CREATE PROCEDURE add_file(
 BEGIN
     INSERT INTO files (owner_id, name, path)
     VALUES (in_owner_id, in_name, in_path);
+    SELECT LAST_INSERT_ID();
 END //
 
 CREATE PROCEDURE get_file_by_id(IN in_id INT UNSIGNED)

@@ -7,11 +7,11 @@ CREATE PROCEDURE add_user(
     IN in_username VARCHAR(255),
     IN in_name VARCHAR(255),
     IN in_email VARCHAR(255)
-
 )
 BEGIN
     INSERT INTO users (username, name, email)
     VALUES (in_username, in_name, in_email);
+    SELECT LAST_INSERT_ID();
 END //
 
 CREATE PROCEDURE get_user_by_id(IN in_id INT UNSIGNED)
