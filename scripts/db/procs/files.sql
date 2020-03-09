@@ -8,11 +8,12 @@ DELIMITER //
 CREATE PROCEDURE add_file(
     IN in_owner_id INT UNSIGNED,
     IN in_name VARCHAR(255),
-    IN in_path VARCHAR(4096)
+    IN in_path VARCHAR(4096),
+    IN in_size INT UNSIGNED
 )
 BEGIN
-    INSERT INTO files (owner_id, name, path)
-    VALUES (in_owner_id, in_name, in_path);
+    INSERT INTO files (owner_id, name, path, size)
+    VALUES (in_owner_id, in_name, in_path, in_size);
     SELECT LAST_INSERT_ID();
 END //
 
