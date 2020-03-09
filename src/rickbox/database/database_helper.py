@@ -86,6 +86,16 @@ class DatabaseHelper:
         self._cursor.execute(query=query, args=params or ())
         return self
 
+    def callproc(self, proc_name, params=None):
+        """
+        Execute an sql stored procedure in the database with optional parameters.
+
+        :param proc_name: name of the stored procedure to call
+        :param params: optional parameters to pass with the query
+        """
+        self._cursor.callproc(proc_name, args=params or ())
+        return self
+
     def fetchall(self):
         return self._cursor.fetchall()
 
