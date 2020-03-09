@@ -1,0 +1,10 @@
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users (
+    uuid VARCHAR(36) NOT NULL PRIMARY KEY,
+    root_folder_id VARCHAR(36) NOT NULL,
+    username VARCHAR(255) NOT NULL,
+    name VARCHAR(255),
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
