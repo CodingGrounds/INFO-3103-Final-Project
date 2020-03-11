@@ -11,7 +11,6 @@ params – name, and email. Returns a User object with the given properties.
 import json
 
 from database.database_helper import DatabaseHelper
-from util.validators import validate_id
 
 
 class User:
@@ -41,6 +40,8 @@ class User:
                 - User record could not be found after saving
             NameError:
                 - user.username exists in database already
+            IndexError:
+                - When adding the user was unsuccessful on the db side for some reason
         """
         if self.id is not None:
             # currently only supports saving new records, not updating existing ones
@@ -50,66 +51,53 @@ class User:
             raise ValueError('The `User.username` attribute must not be empty to save a User object.')
 
         if not User.username_available(self.username):
-            # This should probably be some other exception
+            # This should probably be some other exception, not NameError
             # Maybe some custom ones should be made?
             raise NameError(f'The username {self.username} is already taken.')
 
         with DatabaseHelper() as db:
-            db.callproc('add_user', [self.username, self.name, self.email])
-
-        return User.get_by_identifier(self.username, is_username=True).id
+            new_user_id = db.callproc('add_user', [self.username, self.name, self.email]).fetchone()[0]
+            return f'{new_user_id}'
 
     @classmethod
-    def get_by_identifier(cls, identifier, is_username=None):
+    def get(cls, identifier):
         """
-        Query the database for a single User record based on identifier (ID/username).
+        Query the database for a single User record based on identifier.
 
-        :param identifier: the identifier value of the User record to find
-        :param is_username: whether the identifier value represents a username. False implies the identifier is an ID
+        :param identifier: the user ID or identifier of the User record to find
 
         Returns:
             If a user record exists with the given identifier, return that record
 
         Raises:
             ValueError:
-                - is_username is None
                 - identifier is None or an empty string
             LookupError:
                 - no User record with the given identifier exists
         """
 
-        if is_username is None:
-            raise ValueError('`is_username` must be explicitly set to True or False.')
-
         if identifier in (None, ''):
             raise ValueError('`identifier` is a required parameter.')
 
-        if is_username:
-            identifier_type = 'username'
-        else:
-            identifier_type = 'id'
-            identifier = validate_id(identifier)
-
-        stored_proc = f'get_user_by_{identifier_type}'
-
         # Convert to iterable for PyMySQL
         identifier = (identifier,)
+
         with DatabaseHelper() as db:
-            record = db.callproc(stored_proc, identifier).fetchone()
+            record = db.callproc('get_user', identifier).fetchone()
             if record is None:
-                raise LookupError(f'No user with the given {identifier_type} exists in the database.')
+                raise LookupError('No user with the given identifier exists in the database.')
 
         return User(*record)
 
     @classmethod
     def username_available(cls, username):
-        try:
-            # Username is found, so it is unavailable
-            User.get_by_identifier(username, is_username=True)
-            return False
-        except LookupError:
-            # Username is not found, so it is available
-            return True
+        # Username is found, so it is unavailable
+        with DatabaseHelper() as db:
+            record = db.callproc('get_user_by_username', username).fetchone()
+            if record is None:
+                # No user with given username has been found => Username is available
+                return True
+        return False
 
     @property
     def json(self):
