@@ -29,8 +29,7 @@ class User:
         """
         Commits a User record to the database.
 
-        Returns:
-            If the commit was successful, return the ID of the newly-created User
+        :return If the commit was successful, return the ID of the newly-created User
 
         Raises:
             ValueError:
@@ -64,10 +63,9 @@ class User:
         """
         Query the database for a single User record based on identifier.
 
-        :param identifier: the user ID or identifier of the User record to find
+        :param identifier: the user ID or username of the User record to find
 
-        Returns:
-            If a user record exists with the given identifier, return that record
+        :return If a User record exists with the given identifier, return that record
 
         Raises:
             ValueError:
@@ -79,21 +77,22 @@ class User:
         if identifier in (None, ''):
             raise ValueError('`identifier` is a required parameter.')
 
-        # Convert to iterable for PyMySQL
-        identifier = (identifier,)
-
         with DatabaseHelper() as db:
-            record = db.callproc('get_user', identifier).fetchone()
+            record = db.callproc('get_user', [identifier]).fetchone()
             if record is None:
                 raise LookupError('No user with the given identifier exists in the database.')
 
-        return User(*record)
+        return User(id=record[0], username=record[1], name=record[2], email=record[3])
 
     @classmethod
     def username_available(cls, username):
-        # Username is found, so it is unavailable
+        """
+        Determine if a given username is available to be claimed.
+
+        :return True if the given username cannot be found in the database. Otherwise, return False.
+        """
         with DatabaseHelper() as db:
-            record = db.callproc('get_user_by_username', username).fetchone()
+            record = db.callproc('get_user_by_username', [username]).fetchone()
             if record is None:
                 # No user with given username has been found => Username is available
                 return True
@@ -101,6 +100,11 @@ class User:
 
     @property
     def json(self):
+        """
+        Convert the User object into a JSON string representation.
+
+        :return a JSONified User
+        """
         return json.dumps({
             "id": self.id,
             "username": self.username,
