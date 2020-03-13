@@ -31,7 +31,7 @@ class UserSession(Resource):
         if not request.json \
                 or 'username' not in request.json \
                 or 'password' not in request.json:
-            return Response(json.dumps({'message': 'Bad request'}), 403)
+            return Response(json.dumps({'message': 'Bad request'}), 400)
 
         username = request.json['username']
         with LdapHelper() as ldap:

@@ -53,7 +53,8 @@ class LdapHelper:
         except LDAPInvalidCredentialsResult:
             return 401, 'invalid username or password provided'
         except LDAPException as e:
-            return 500, f'an unexpected error occurred: {e}'
+            print(e)
+            return 500, 'an unexpected error occurred'
         finally:
             connection.unbind()
 
