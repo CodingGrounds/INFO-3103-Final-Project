@@ -28,4 +28,5 @@ class UserManager(Resource):
         except LookupError:
             return ERROR_404
 
+        # user.json is already json, so json_response is not applicable
         return Response(user.json, 200)

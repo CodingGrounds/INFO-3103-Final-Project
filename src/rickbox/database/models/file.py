@@ -9,6 +9,7 @@ params – name, and email. Returns a File object with the given properties.
 """
 
 import json
+import os
 
 from database.database_helper import DatabaseHelper
 from database.models.user import User
@@ -39,19 +40,16 @@ class File:
 
         Raises:
             ValueError:
-                - file.id is set (`put` operation is NYI)
                 - file.owner_id is blank (None or '')
                 - file.name is blank (None or '')
                 - file.path is blank (None or '')
             LookupError:
                 - User record with id corresponding to `file.user_id` could not be found
+            IndexError:
                 - File record could not be found after saving
-            NameError:
-                - file.name exists in database already for given owner_id
         """
         if self.id is not None:
-            # currently only supports saving new records, not updating existing ones
-            raise ValueError('The `File.id` attribute must be None to save a File object.')
+            self._update()
 
         if self.owner_id in (None, ''):
             raise ValueError('The `File.owner_id` attribute must not be empty to save a File object.')
@@ -68,6 +66,19 @@ class File:
         with DatabaseHelper() as db:
             result = db.callproc('add_file', [self.owner_id, self.name, self.path, self.size])
             return result.fetchone()[0]
+
+    def _update(self):
+        with DatabaseHelper() as db:
+            db.callproc('update_file', [self.id, self.name])
+        return File.get_by_id(self.id)
+
+    def delete(self):
+        """
+        Delete the file from the database and from storage.
+        """
+        os.remove(self.path)
+        with DatabaseHelper() as db:
+            db.callproc('delete_file', [self.id])
 
     @classmethod
     def get_by_id(cls, file_id):
@@ -146,9 +157,8 @@ class File:
         """
         return json.dumps({
             "id": self.id,
-            "owner_id": self.owner_id,
             "name": self.name,
             "path": self.path,
-            "size": self.size,
-            "last_modified": self.last_modified.ctime()
+            "last_modified": self.last_modified.ctime(),
+            "size": self.size
         })

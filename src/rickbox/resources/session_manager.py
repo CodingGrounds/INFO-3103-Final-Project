@@ -13,17 +13,20 @@ CLI Usage (with app running on info3103:1503):
     Check if logged in:
         curl -i -H "Content-Type: application/json" -X GET -b cookie-jar http://info3103.cs.unb.ca:1503/login
 """
+import os
 
 from flask import request, session
 from flask_restful import Resource
+from werkzeug.utils import secure_filename
 
+from app_config import UPLOAD_FOLDER
 from database.models.user import User
 from ldap.ldap_helper import LdapHelper
 from util.decorators import conceal_error_message, require_session
-from util.responses import ERROR_400, json_response
+from util.responses import ERROR_400, json_response, OK_204
 
 
-class UserSession(Resource):
+class SessionManager(Resource):
 
     @conceal_error_message
     def post(self):
@@ -41,10 +44,16 @@ class UserSession(Resource):
         response_body = {'message': result[1]}
 
         if status_code == 201:
-            # auto-generate User records for first-time logins
+            # auto-generate User records and data folders for first-time logins
             if User.username_available(username):
                 User(username=username).save()
-            user_record = User.get_by_username(username)
+                user_dir = os.path.join(UPLOAD_FOLDER, username)
+                try:
+                    os.makedirs(user_dir)
+                except FileExistsError:
+                    pass
+
+            user_record = User.get(username)
             session['username'] = username
             session['user_id'] = user_record.id
 
@@ -62,4 +71,4 @@ class UserSession(Resource):
             session.pop('username')
         except KeyError:
             pass
-        return json_response({'message': 'OK'}, 204)
+        return OK_204

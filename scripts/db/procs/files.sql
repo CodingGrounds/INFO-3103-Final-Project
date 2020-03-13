@@ -2,6 +2,7 @@ DROP PROCEDURE IF EXISTS add_file;
 DROP PROCEDURE IF EXISTS get_file_by_id;
 DROP PROCEDURE IF EXISTS get_file_by_owner_id;
 DROP PROCEDURE IF EXISTS delete_file;
+DROP PROCEDURE IF EXISTS update_file;
 
 DELIMITER //
 
@@ -30,6 +31,15 @@ END //
 CREATE PROCEDURE delete_file(IN in_id INT UNSIGNED)
 BEGIN
     DELETE FROM files WHERE id = in_id;
+END //
+
+CREATE PROCEDURE update_file(IN in_id INT UNSIGNED, IN in_name VARCHAR(255))
+BEGIN
+    UPDATE files
+    SET
+        name = in_name,
+        last_modified = CURRENT_TIMESTAMP
+    WHERE id = in_id;
 END //
 
 DELIMITER ;
