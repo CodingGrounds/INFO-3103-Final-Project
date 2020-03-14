@@ -14,3 +14,5 @@ SESSION_COOKIE_NAME = 'rickbox'
 SESSION_COOKIE_DOMAIN = 'info3103.cs.unb.ca'
 
 LDAP_HOST = 'ldap-student.cs.unb.ca'
+
+UPLOAD_FOLDER = 'user_content'

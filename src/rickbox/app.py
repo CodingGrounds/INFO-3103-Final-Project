@@ -1,13 +1,13 @@
-import json
-
-from flask import Flask, request, Response, session
+from flask import Flask
 from flask_restful import Api
 from flask_session import Session
 
 import app_config
-from database.models.user import User
-from resources.user_session import UserSession
+from resources.file_manager import FileManager
+from resources.file_collection_manager import FileCollectionManager
 from resources.user_manager import UserManager
+from resources.session_manager import SessionManager
+from util.responses import json_response
 
 app = Flask(__name__)
 
@@ -19,19 +19,16 @@ app.config['SESSION_COOKIE_DOMAIN'] = app_config.SESSION_COOKIE_DOMAIN
 Session(app)
 api = Api(app)
 
-api.add_resource(UserSession, '/login')
+api.add_resource(SessionManager, '/login')
 api.add_resource(UserManager, '/users/<user_identifier>')
-
-
-@app.route('/')
-def hello_world():
-    return 'Hello, World!'
+api.add_resource(FileCollectionManager, '/users/<user_identifier>/files')
+api.add_resource(FileManager, '/users/<user_identifier>/files/<file_id>')
 
 
 @app.route('/users', strict_slashes=False)
 def users_list():
     response_body = {'message': 'Listing users is not enabled.'}
-    return Response(json.dumps(response_body), 200)
+    return json_response(response_body, 200)
 
 
 if __name__ == '__main__':

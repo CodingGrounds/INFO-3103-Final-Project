@@ -1,5 +1,6 @@
 venv/
 src/rickbox/flask_session/
+src/rickbox/user_content/
 .idea/
 __pycache__/
 *.swp
