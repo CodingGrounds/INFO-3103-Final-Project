@@ -5,7 +5,7 @@ Code-centric usage is all handled automatically by Flask-Session.
 
 CLI Usage (with app running on info3103:1503):
     View user with ID=1:
-        curl -i -H "Content-Type: application/json" -X GET -b cookie-jar http://info3103.cs.unb.ca:1503/users/1
+        curl -i -H "Content-Type: application/json" -X GET -b cookie-jar https://info3103.cs.unb.ca:1503/users/1 -k
 """
 
 from flask import Response
