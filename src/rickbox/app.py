@@ -32,8 +32,10 @@ def users_list():
 
 
 if __name__ == '__main__':
+    context = ('cert.pem', 'key.pem')  # Identify the certificates you've generated.
     app.run(
         host=app_config.APP_HOST,
         port=app_config.APP_PORT,
-        debug=app_config.APP_DEBUG
+        debug=app_config.APP_DEBUG,
+        ssl_context=context
     )
