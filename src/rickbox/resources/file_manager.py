@@ -56,7 +56,6 @@ class FileManager(Resource):
             print(request)
             return ERROR_400
 
-        # SQL injection?
         authorized_file.name = request.json['name']
         authorized_file.save()
         return Response(authorized_file.json, 200, mimetype='application/json')
