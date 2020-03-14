@@ -6,15 +6,15 @@ Code-centric usage is all handled automatically by Flask-Session.
 CLI Usage (with app running on info3103:1503):
     Download a file:
         Pay special attention to "LOCAL_FILE_NAME_HERE", port number, user identifier in the URL, and OUTPUT_FILE_NAME
-        curl -H "Content-Type: application/json" -X GET -b cookie-jar http://info3103.cs.unb.ca:1503/users/USER_IDENTIFIER/files/FILE_ID --output OUTPUT_FILE_NAME
+        curl -H "Content-Type: application/json" -X GET -b cookie-jar https://info3103.cs.unb.ca:1503/users/USER_IDENTIFIER/files/FILE_ID --output OUTPUT_FILE_NAME -k
 
     Delete a file:
         Pay special attention to port number, user identifier, and file id
-        curl -H "Content-Type: application/json" -X DELETE -b cookie-jar http://info3103.cs.unb.ca:1503/users/USER_IDENTIFIER/files/FILE_ID -i
+        curl -H "Content-Type: application/json" -X DELETE -b cookie-jar https://info3103.cs.unb.ca:1503/users/USER_IDENTIFIER/files/FILE_ID -i -k
 
     Rename a file:
         Pay special attention to port number, user identifier, file id, and passed JSON
-        curl -i -H "Content-Type: application/json" -X PUT -b cookie-jar http://info3103.cs.unb.ca:1503/users/USER_IDENTIFIER/files/FILE_ID -d '{"name": "fdsagsdf"}' -v
+        curl -i -H "Content-Type: application/json" -X PUT -b cookie-jar https://info3103.cs.unb.ca:1503/users/USER_IDENTIFIER/files/FILE_ID -d '{"name": "fdsagsdf"}' -v -k
 """
 
 from flask import send_file, request, Response

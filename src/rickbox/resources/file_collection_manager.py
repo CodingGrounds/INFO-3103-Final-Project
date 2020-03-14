@@ -6,11 +6,11 @@ Code-centric usage is all handled automatically by Flask-Session.
 CLI Usage (with app running on info3103:1503):
     Upload a file:
         Pay special attention to "LOCAL_FILE_NAME_HERE", port number, and user identifier in the URL
-        curl -i -H "Content-Type: multipart/form-data" -X POST -F "file=@LOCAL_FILE_NAME_HERE" -b cookie-jar http://info3103.cs.unb.ca:1503/users/1/files  -v
+        curl -i -H "Content-Type: multipart/form-data" -X POST -F "file=@LOCAL_FILE_NAME_HERE" -b cookie-jar https://info3103.cs.unb.ca:1503/users/1/files -v -k
 
     View all files for user:
         Pay special attention to port number and user identifier in the URL
-        curl -i -H "Content-Type: application/json" -X GET -b cookie-jar http://info3103.cs.unb.ca:1503/users/1/files -v
+        curl -i -H "Content-Type: application/json" -X GET -b cookie-jar https://info3103.cs.unb.ca:1503/users/1/files -v -k
  """
 import os
 

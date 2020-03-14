@@ -5,13 +5,13 @@ Code-centric usage is all handled automatically by Flask-Session.
 
 CLI Usage (with app running on info3103:1503):
     Log in:
-        curl -i -H "Content-Type: application/json" -X POST -d '{"username": "jsmith123", "password": "secret"}' -c cookie-jar http://info3103.cs.unb.ca:1503/login
+        curl -i -H "Content-Type: application/json" -X POST -d '{"username": "jsmith123", "password": "secret"}' -c cookie-jar https://info3103.cs.unb.ca:1503/login -k
 
     Log out:
-        curl -i -H "Content-Type: application/json" -X DELETE -b cookie-jar http://info3103.cs.unb.ca:1503/login
+        curl -i -H "Content-Type: application/json" -X DELETE -b cookie-jar https://info3103.cs.unb.ca:1503/login -k
 
     Check if logged in:
-        curl -i -H "Content-Type: application/json" -X GET -b cookie-jar http://info3103.cs.unb.ca:1503/login
+        curl -i -H "Content-Type: application/json" -X GET -b cookie-jar https://info3103.cs.unb.ca:1503/login -k
 """
 import os
 
