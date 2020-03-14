@@ -52,8 +52,6 @@ class FileManager(Resource):
         """
 
         if not request.json or 'name' not in request.json:
-            print("JSON error")
-            print(request)
             return ERROR_400
 
         authorized_file.name = request.json['name']

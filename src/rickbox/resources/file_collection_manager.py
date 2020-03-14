@@ -22,7 +22,7 @@ from app_config import UPLOAD_FOLDER
 from database.models.file import File
 from database.models.user import User
 from util.decorators import conceal_error_message, require_session
-from util.responses import resource_created, resource_list, ERROR_400
+from util.responses import resource_created, resource_list, ERROR_400, ERROR_404
 
 
 class FileCollectionManager(Resource):
@@ -61,5 +61,9 @@ class FileCollectionManager(Resource):
         """
         List all files owned by the given user.
         """
-        owned_files = File.get_by_owner(user_identifier, json=True)
+        try:
+            owned_files = File.get_by_owner(user_identifier, json=True)
+        except LookupError:
+            return ERROR_404
+
         return resource_list(owned_files)

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+INFO3103_PORT="changeme"  # eg 1503
+INFO3103_HOSTNAME="changeme"  # eg info3103.cs.unb.ca
+
+if [[ "$INFO3103_PORT" == "changeme" || "$INFO3103_HOSTNAME" == "changeme" ]]; then
+  echo "Please configure INFO3103_PORT and INFO3103_HOSTNAME in app_config!"
+  exit 1
+fi
+
+INFO3103_COOKIE="rickbox_cookie"
+INFO3103_URL="https://$INFO3103_HOSTNAME:$INFO3103_PORT"
