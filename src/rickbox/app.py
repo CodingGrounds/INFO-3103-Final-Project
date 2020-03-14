@@ -25,11 +25,6 @@ api.add_resource(FileCollectionManager, '/users/<user_identifier>/files')
 api.add_resource(FileManager, '/users/<user_identifier>/files/<file_id>')
 
 
-@app.route('/')
-def hello_world():
-    return 'Hello, World!'
-
-
 @app.route('/users', strict_slashes=False)
 def users_list():
     response_body = {'message': 'Listing users is not enabled.'}
