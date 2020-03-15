@@ -33,11 +33,12 @@ BEGIN
     DELETE FROM files WHERE id = in_id;
 END //
 
-CREATE PROCEDURE update_file(IN in_id INT UNSIGNED, IN in_name VARCHAR(255))
+CREATE PROCEDURE update_file(IN in_id INT UNSIGNED, IN in_name VARCHAR(255), IN in_path VARCHAR(4096))
 BEGIN
     UPDATE files
     SET
         name = in_name,
+        path = in_path,
         last_modified = CURRENT_TIMESTAMP
     WHERE id = in_id;
 END //

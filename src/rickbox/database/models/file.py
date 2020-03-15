@@ -11,6 +11,9 @@ params – name, and email. Returns a File object with the given properties.
 import json
 import os
 
+from werkzeug.utils import secure_filename
+
+from app_config import UPLOAD_FOLDER
 from database.database_helper import DatabaseHelper
 from database.models.user import User
 from util.validators import validate_id
@@ -49,7 +52,7 @@ class File:
                 - File record could not be found after saving
         """
         if self.id is not None:
-            self._update()
+            return self._update()
 
         if self.owner_id in (None, ''):
             raise ValueError('The `File.owner_id` attribute must not be empty to save a File object.')
@@ -68,8 +71,17 @@ class File:
             return result.fetchone()[0]
 
     def _update(self):
+        owner = User.get(self.owner_id)
+        sanitized_filename = secure_filename(self.name)
+        path = os.path.join(UPLOAD_FOLDER, owner.username, sanitized_filename)
+
+        if os.path.exists(path):
+            raise FileExistsError
+
+        os.rename(self.path, path)
+        self.path = path
         with DatabaseHelper() as db:
-            db.callproc('update_file', [self.id, self.name])
+            db.callproc('update_file', [self.id, self.name, self.path])
         return File.get_by_id(self.id)
 
     def delete(self):

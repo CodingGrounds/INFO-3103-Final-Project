@@ -1,0 +1,101 @@
+#!/bin/bash
+
+source ../app_config
+
+if [[ "$?" == "1" ]]; then  # app_config needs to be set up
+  exit 1
+fi
+
+source ../lib
+
+echo "We need real LDAP credentials here..."
+
+read -p "username: " username
+read -s -p "password: " password
+
+echo ""
+
+log_user_in
+if [[ $response == *'successfully authenticated user'* ]]; then
+  echo "✓ Successfully authenticated!"
+else
+  echo "✘ Login failed."
+  exit 1
+fi
+
+is_logged_in
+if [[ $response == *'"message": "OK"'* ]]; then
+  echo "✓ Successfully verified sesssion!"
+else
+  echo "✘ Failed to retrieve session details."
+  exit 1
+fi
+
+user_identifier=$username
+file_path="file.jpg"
+upload_file
+if [[ $response == '{"resourceId":'* ]]; then
+  echo "✓ Successfully uploaded file!"
+else
+  echo "✘ File upload failed."
+  exit 1
+fi
+
+file_id=$(echo $response | python -c 'import json,sys;print(json.load(sys.stdin))["resourceId"];')
+new_filename="$(echo $(date) $(uptime) | md5)"
+rename_file
+renamed_file_name=$(echo $response | python -c 'import json,sys;print(json.load(sys.stdin))["name"];')
+if [[ $renamed_file_name == $new_filename ]]; then
+  echo "✓ Successfully renamed file!"
+else
+  echo "✘ File renaming failed."
+fi
+
+local_filename="downloaded.jpg"
+download_file
+original_file_hash=$(md5 $file_path | awk '{ print $4 }')
+downloaded_file_hash=$(md5 $local_filename | awk '{ print $4 }')
+rm $local_filename
+if [[ $original_file_hash == $downloaded_file_hash ]]; then
+  echo "✓ Successfully downloaded file!"
+else
+  echo "✘ File download failed."
+  exit 1
+fi
+
+
+get_user_details
+retrieved_user_id=$(echo $response | python -c 'import json,sys;print(json.load(sys.stdin))["id"];')
+retrieved_username=$(echo $response | python -c 'import json,sys;print(json.load(sys.stdin))["username"];')
+if [[ $retrieved_username == $username ]]; then
+  echo "✓ Successfully retrieved user details!"
+else
+  echo "✘ Failed to retrieve user details."
+  exit 1
+fi
+
+list_user_files
+if [[ $response == *'items'*'id'*$new_filename* ]]; then
+  echo "✓ Successfully retrieved your file list!"
+else
+  echo "✘ Failed to retrieve file list."
+  exit 1
+fi
+
+delete_file
+list_user_files
+if [[ $response == *'id\": '$file_id','* ]]; then
+  echo "✘ Failed to delete file."
+  exit 1
+else
+  echo "✓ Successfully deleted file!"
+fi
+
+log_user_out
+rm $INFO3103_COOKIE
+if [[ $response == '' ]]; then
+  echo "✓ Successfully logged out!"
+else
+  echo "✘ Logout failed, somehow."
+  exit 1
+fi

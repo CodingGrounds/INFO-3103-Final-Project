@@ -1,0 +1,86 @@
+#!/bin/bash
+
+download_file(){
+  response="$(curl -k \
+    -H "Content-Type: application/json" \
+    -X GET \
+    -b $INFO3103_COOKIE \
+    --silent \
+    --write-out "%{http_code}\n" \
+    --output $local_filename \
+    $INFO3103_URL/users/$user_identifier/files/$file_id)"
+}
+
+get_user_details(){
+  response="$(curl -k \
+    -H "Content-Type: application/json" \
+    -X GET \
+    -b $INFO3103_COOKIE \
+    --silent \
+    $INFO3103_URL/users/$user_identifier)"
+}
+
+is_logged_in(){
+  response="$(curl -k \
+    -H "Content-Type: application/json" \
+    -X GET \
+    -b $INFO3103_COOKIE \
+    --silent \
+    $INFO3103_URL/login)"
+}
+
+list_user_files(){
+  response="$(curl -k \
+    -H "Content-Type: multipart/form-data" \
+    -X GET \
+    -b $INFO3103_COOKIE \
+    --silent \
+    $INFO3103_URL/users/$user_identifier/files)"
+}
+
+log_user_in(){
+  response="$(curl -k \
+    -H "Content-Type: application/json" \
+    -d '{"username": "'$username'", "password": "'$password'"}' \
+    -c $INFO3103_COOKIE \
+    --silent \
+    $INFO3103_URL/login)"
+}
+
+log_user_out(){
+  response="$(curl -k \
+    -H "Content-Type: application/json" \
+    -X DELETE \
+    -b $INFO3103_COOKIE \
+    --silent \
+    $INFO3103_URL/login)"
+}
+
+upload_file() {
+  response="$(curl -k \
+    -H "Content-Type: multipart/form-data" \
+    -X POST \
+    -F "file=@$file_path" \
+    -b $INFO3103_COOKIE \
+    --silent \
+    $INFO3103_URL/users/$user_identifier/files)"
+}
+
+rename_file(){
+  response="$(curl -k \
+    -H "Content-Type: application/json" \
+    -X PUT \
+    -d '{"name": "'$new_filename'"}' \
+    -b $INFO3103_COOKIE \
+    --silent \
+    $INFO3103_URL/users/$user_identifier/files/$file_id)"
+}
+
+delete_file(){
+  response="$(curl -k \
+    -H "Content-Type: application/json" \
+    -X DELETE \
+    -b $INFO3103_COOKIE \
+    --silent \
+    $INFO3103_URL/users/$user_identifier/files/$file_id)"
+}
