@@ -21,7 +21,7 @@ from flask import send_file, request, Response
 from flask_restful import Resource
 
 from util.decorators import conceal_error_message, verify_file_access_authorization
-from util.responses import ERROR_400, OK_204
+from util.responses import ERROR_400, OK_204, ERROR_409
 
 
 class FileManager(Resource):
@@ -52,10 +52,12 @@ class FileManager(Resource):
         """
 
         if not request.json or 'name' not in request.json:
-            print("JSON error")
-            print(request)
             return ERROR_400
 
-        authorized_file.name = request.json['name']
-        authorized_file.save()
+        try:
+            authorized_file.name = request.json['name']
+            authorized_file.save()
+        except FileExistsError:
+            return ERROR_409
+
         return Response(authorized_file.json, 200, mimetype='application/json')

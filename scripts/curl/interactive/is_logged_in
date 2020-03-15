@@ -1,0 +1,21 @@
+#!/bin/bash
+
+source ../app_config
+
+if [[ "$?" == "1" ]]; then  # app_config needs to be set up
+  exit 1
+fi
+
+source ../lib
+
+is_logged_in
+
+echo ""
+
+if [[ $response == *'"message": "OK"'* ]]; then
+  echo "✓ Successfully verified sesssion!"
+elif  [[ $response == *'Authentication Required'* ]]; then
+  echo "✘ Failed to retrieve session details. Have you logged in yet?"
+fi
+
+echo "=>  $response"

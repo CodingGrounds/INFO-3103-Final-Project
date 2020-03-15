@@ -1,0 +1,31 @@
+#!/bin/bash
+
+source ../app_config
+
+if [[ "$?" == "1" ]]; then  # app_config needs to be set up
+  exit 1
+fi
+
+source ../lib
+
+read -p "username or user ID: " user_identifier
+read -p "enter a file id to download: " file_id
+read -p "enter a local filename to save the file as: " local_filename
+
+download_file
+
+echo ""
+
+if [[ $response == '200' ]]; then
+  echo "✓ Successfully downloaded file! Go check > $local_filename <"
+elif [[ $response == '400' ]]; then
+  echo "✘ File download failed - malformed request."
+elif [[ $response == '403' ]]; then
+  echo "✘ File download failed - something is wrong with your session. Try logging in again."
+elif [[ $response == '404' ]]; then
+  echo "✘ File download failed - requested file does not exist."
+else
+  echo "✘ File download failed for an unknown reason."
+fi
+
+echo "=>  $response"

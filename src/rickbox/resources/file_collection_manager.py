@@ -22,7 +22,7 @@ from app_config import UPLOAD_FOLDER
 from database.models.file import File
 from database.models.user import User
 from util.decorators import conceal_error_message, require_session
-from util.responses import resource_created, resource_list, ERROR_400
+from util.responses import resource_created, resource_list, ERROR_400, ERROR_404, ERROR_409
 
 
 class FileCollectionManager(Resource):
@@ -47,12 +47,12 @@ class FileCollectionManager(Resource):
         # Build the filesystem path
         sanitized_filename = secure_filename(file.filename)
         path = os.path.join(UPLOAD_FOLDER, owner.username, sanitized_filename)
+        if os.path.exists(path):  # file already exists in filesystem
+            return ERROR_409
+
         file.save(path)
-
         file_size = os.stat(path).st_size
-
         file_id = File(owner_id=owner.id, name=file.filename, path=path, size=file_size).save()
-
         return resource_created(file_id)
 
     @conceal_error_message
@@ -61,5 +61,9 @@ class FileCollectionManager(Resource):
         """
         List all files owned by the given user.
         """
-        owned_files = File.get_by_owner(user_identifier, json=True)
+        try:
+            owned_files = File.get_by_owner(user_identifier, json=True)
+        except LookupError:
+            return ERROR_404
+
         return resource_list(owned_files)

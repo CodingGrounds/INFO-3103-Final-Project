@@ -57,7 +57,7 @@ def verify_file_access_authorization(func):
         if file_id in [None, '']:
             return ERROR_400
 
-        if user_identifier not in [session.get('user_id'), session.get('username')]:
+        if user_identifier not in [str(session.get('user_id')), session.get('username')]:
             return ERROR_403
 
         try:
