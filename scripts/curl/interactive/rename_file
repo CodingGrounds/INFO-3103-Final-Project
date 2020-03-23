@@ -16,7 +16,7 @@ rename_file
 
 echo ""
 
-if [[ $response == *'"name": "$new_filename"'* ]]; then
+if [[ $response == *'"name": "'$new_filename'"'* ]]; then
   echo "✓ Successfully renamed file!"
 elif  [[ $response == *'Authentication Required'* ]]; then
   echo "✘ Failed to rename file. Have you logged in yet?"
