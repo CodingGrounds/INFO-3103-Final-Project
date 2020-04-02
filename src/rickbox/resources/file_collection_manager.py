@@ -12,6 +12,7 @@ CLI Usage (with app running on info3103:1503):
         Pay special attention to port number and user identifier in the URL
         curl -i -H "Content-Type: application/json" -X GET -b cookie-jar https://info3103.cs.unb.ca:1503/users/1/files -v -k
  """
+import json
 import os
 
 from flask import request
@@ -33,27 +34,34 @@ class FileCollectionManager(Resource):
         """
         Upload a new file.
         """
-        if 'file' not in request.files:
+        if len(request.files) == 0:
+            print('No files found in request')
+            print(request)
             return ERROR_400
 
-        file = request.files['file']
+        created_resources = []
+        for file in request.files:
+            file = request.files[file]
+            # User did not select a file, so HTTP sends empty filename
+            print(file)
+            if file.filename == '':
+                print('Empty filename error:')
+                print(json.dumps(file))
+                return ERROR_400
 
-        # User did not select a file, so HTTP sends empty filename
-        if file.filename == '':
-            return ERROR_400
+            owner = User.get(user_identifier)
 
-        owner = User.get(user_identifier)
+            # Build the filesystem path
+            sanitized_filename = secure_filename(file.filename)
+            path = os.path.join(UPLOAD_FOLDER, owner.username, sanitized_filename)
+            if os.path.exists(path):  # file already exists in filesystem
+                return ERROR_409
 
-        # Build the filesystem path
-        sanitized_filename = secure_filename(file.filename)
-        path = os.path.join(UPLOAD_FOLDER, owner.username, sanitized_filename)
-        if os.path.exists(path):  # file already exists in filesystem
-            return ERROR_409
-
-        file.save(path)
-        file_size = os.stat(path).st_size
-        file_id = File(owner_id=owner.id, name=file.filename, path=path, size=file_size).save()
-        return resource_created(file_id)
+            file.save(path)
+            file_size = os.stat(path).st_size
+            file_id = File(owner_id=owner.id, name=file.filename, path=path, size=file_size).save()
+            created_resources.append(file_id)
+        return resource_created(created_resources)
 
     @conceal_error_message
     @require_session
