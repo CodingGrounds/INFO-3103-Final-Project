@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from flask_restful import Api
 from flask_session import Session
 
@@ -18,6 +19,7 @@ app.config['SESSION_COOKIE_NAME'] = app_config.SESSION_COOKIE_NAME
 app.config['SESSION_COOKIE_DOMAIN'] = app_config.SESSION_COOKIE_DOMAIN
 Session(app)
 api = Api(app)
+CORS(app, supports_credentials=True)
 
 api.add_resource(SessionManager, '/login')
 api.add_resource(UserManager, '/users/<user_identifier>')

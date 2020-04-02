@@ -5,7 +5,7 @@ MYSQL_PASS = 'password'
 MYSQL_DB = 'rickbox'
 
 APP_HOST = 'info3103.cs.unb.ca'
-APP_PORT = 1503
+APP_PORT = 8002
 APP_DEBUG = True
 APP_SECRET_KEY = 'rickbox'
 
